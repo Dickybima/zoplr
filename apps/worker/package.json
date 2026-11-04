@@ -9,9 +9,9 @@
     "typecheck": "tsc -p ."
   },
   "dependencies": {
-    "@zoplr/db": "workspace:*",
-    "@zoplr/pons": "workspace:*",
-    "viem": "^2.22.0"
+    "@zoplr/launch": "workspace:*"
   },
-  "devDependencies": { "tsx": "^4.19.2" }
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
 }

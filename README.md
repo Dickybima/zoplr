@@ -30,11 +30,12 @@ Browser (wallet user)                 Server                         Chain (Pons
 ```
 apps/
   web/        Next.js: UI, wallet (wagmi), API, chat streaming (Claude)
-  worker/     Verifikasi tx launch → menandai agent live
+  worker/     (Opsional, non-serverless) polling verifikasi launch
 packages/
   core/       Skema & validasi agent, system prompt + aturan platform
   pons/       Adapter Pons V2: ABI, config chain, build/simulate/parse launch
   db/         Skema Postgres (Drizzle)
+  launch/     Verifikasi receipt launch → agent live (dipakai web & worker)
 tests/fork/   Test integrasi terhadap fork mainnet (Anvil)
 scripts/      fork.sh — jalankan Anvil fork
 ```
@@ -92,6 +93,18 @@ pnpm test:fork
 ```
 
 `pnpm test` menjalankan unit test, sedangkan `pnpm test:fork` menjalankan launch token sungguhan di fork (butuh `pnpm fork` jalan). Di CI, job `fork-test` otomatis jalan setelah secret `MAINNET_RPC_URL` serta variable `PONS_CHAIN_ID` dan `PONS_FACTORY_ADDRESS` diisi di GitHub (Settings → Secrets and variables → Actions). Isi juga `FORK_BLOCK_NUMBER` supaya hasilnya konsisten.
+
+## Deploy ke Vercel
+
+1. **Project → Settings → Build and Deployment → Root Directory = `apps/web`.** Ini wajib karena aplikasi Next.js ada di `apps/web`, bukan di root repo. Biarkan opsi "Include files outside the root directory" aktif (default), karena web memakai package di `packages/*`.
+2. **Database:** buat Postgres hosted (misalnya Neon, Supabase, atau Vercel Postgres) dan pakai *connection string pooler*-nya. Buat tabel dari komputer Anda:
+   ```bash
+   DATABASE_URL="<url-postgres-anda>" pnpm db:push
+   ```
+3. **Environment Variables** (Settings → Environment Variables): `DATABASE_URL`, `ANTHROPIC_API_KEY`, `ZOPLR_CHAIN_MODE`, `MAINNET_RPC_URL`, `PONS_CHAIN_ID`, `PONS_FACTORY_ADDRESS`, dan versi `NEXT_PUBLIC_*`-nya (lihat `.env.example`). Variabel `NEXT_PUBLIC_*` ditanam saat build, jadi **redeploy** setiap kali mengubahnya.
+4. Redeploy.
+
+Di Vercel tidak perlu worker: halaman agent memverifikasi transaksi launch sendiri setiap kali di-refresh. Mode `fork` hanya untuk lokal (Anvil di `127.0.0.1` tidak bisa diakses dari Vercel), jadi deployment Vercel harus memakai `mainnet` dengan allowlist.
 
 ## Menuju mainnet
 

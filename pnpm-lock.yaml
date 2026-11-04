@@ -41,6 +41,9 @@ importers:
       '@zoplr/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@zoplr/launch':
+        specifier: workspace:*
+        version: link:../../packages/launch
       '@zoplr/pons':
         specifier: workspace:*
         version: link:../../packages/pons
@@ -72,15 +75,9 @@ importers:
 
   apps/worker:
     dependencies:
-      '@zoplr/db':
+      '@zoplr/launch':
         specifier: workspace:*
-        version: link:../../packages/db
-      '@zoplr/pons':
-        specifier: workspace:*
-        version: link:../../packages/pons
-      viem:
-        specifier: ^2.22.0
-        version: 2.57.16(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.6.7)
+        version: link:../../packages/launch
     devDependencies:
       tsx:
         specifier: ^4.19.2
@@ -107,6 +104,18 @@ importers:
       drizzle-kit:
         specifier: ^0.30.1
         version: 0.30.6
+
+  packages/launch:
+    dependencies:
+      '@zoplr/db':
+        specifier: workspace:*
+        version: link:../db
+      '@zoplr/pons':
+        specifier: workspace:*
+        version: link:../pons
+      viem:
+        specifier: ^2.22.0
+        version: 2.57.16(bufferutil@4.1.0)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@4.6.7)
 
   packages/pons:
     dependencies:

@@ -1,13 +1,31 @@
 import { notFound } from "next/navigation";
-import { agents, eq, getDb } from "@zoplr/db";
+import { agents, eq, getDb, isDbConfigured } from "@zoplr/db";
+import { verifyLaunch } from "@zoplr/launch";
+import { missingServerEnv, SetupNotice } from "../../setup-notice";
 import { AgentLive } from "./agent-live";
 
 export const dynamic = "force-dynamic";
 
 export default async function AgentPage({ params }: { params: Promise<{ slug: string }> }) {
+  if (!isDbConfigured()) return <SetupNotice missing={missingServerEnv()} />;
+
   const { slug } = await params;
-  const [agent] = await getDb().select().from(agents).where(eq(agents.slug, slug));
+  const db = getDb();
+  let [agent] = await db.select().from(agents).where(eq(agents.slug, slug));
   if (!agent) notFound();
+
+  // Tanpa worker (mis. di Vercel): verifikasi launch setiap kali halaman di-refresh.
+  if (agent.status === "launching") {
+    try {
+      const result = await verifyLaunch(agent);
+      if (result === "live" || result === "failed") {
+        [agent] = await db.select().from(agents).where(eq(agents.slug, slug));
+        if (!agent) notFound();
+      }
+    } catch (err) {
+      console.error(`[agent] verifikasi launch ${slug} gagal:`, err);
+    }
+  }
 
   return (
     <>

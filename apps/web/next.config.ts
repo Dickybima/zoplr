@@ -6,7 +6,7 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(path.resolve(process.cwd(), "../.."));
 
 const config: NextConfig = {
-  transpilePackages: ["@zoplr/core", "@zoplr/db", "@zoplr/pons"],
+  transpilePackages: ["@zoplr/core", "@zoplr/db", "@zoplr/launch", "@zoplr/pons"],
   serverExternalPackages: ["postgres"],
 };
 
