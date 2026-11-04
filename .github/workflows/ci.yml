@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+
+  # Test launch sungguhan terhadap fork mainnet. Hanya jalan jika secret sudah diisi
+  # di Settings → Secrets and variables → Actions.
+  fork-test:
+    runs-on: ubuntu-latest
+    needs: check
+    env:
+      MAINNET_RPC_URL: ${{ secrets.MAINNET_RPC_URL }}
+      PONS_CHAIN_ID: ${{ vars.PONS_CHAIN_ID }}
+      PONS_FACTORY_ADDRESS: ${{ vars.PONS_FACTORY_ADDRESS }}
+      FORK_BLOCK_NUMBER: ${{ vars.FORK_BLOCK_NUMBER }}
+    steps:
+      - uses: actions/checkout@v4
+        if: env.MAINNET_RPC_URL != ''
+      - uses: pnpm/action-setup@v4
+        if: env.MAINNET_RPC_URL != ''
+      - uses: actions/setup-node@v4
+        if: env.MAINNET_RPC_URL != ''
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: foundry-rs/foundry-toolchain@v1
+        if: env.MAINNET_RPC_URL != ''
+      - run: pnpm install --frozen-lockfile
+        if: env.MAINNET_RPC_URL != ''
+      - name: Jalankan Anvil fork
+        if: env.MAINNET_RPC_URL != ''
+        run: |
+          bash scripts/fork.sh > anvil.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf -X POST -H 'content-type: application/json' \
+              --data '{"jsonrpc":"2.0","id":1,"method":"eth_chainId","params":[]}' \
+              http://127.0.0.1:8545 && break
+            sleep 1
+          done
+      - run: pnpm test:fork
+        if: env.MAINNET_RPC_URL != ''
+      - name: Log Anvil
+        if: failure() && env.MAINNET_RPC_URL != ''
+        run: cat anvil.log

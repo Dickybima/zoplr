@@ -1,0 +1,22 @@
+{
+  "name": "zoplr",
+  "private": true,
+  "packageManager": "pnpm@10.28.0",
+  "scripts": {
+    "dev": "pnpm --filter @zoplr/web dev",
+    "dev:worker": "pnpm --filter @zoplr/worker dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "vitest run",
+    "test:fork": "FORK_TEST=1 vitest run tests/fork",
+    "fork": "bash scripts/fork.sh",
+    "db:push": "pnpm --filter @zoplr/db push"
+  },
+  "devDependencies": {
+    "@zoplr/pons": "workspace:*",
+    "viem": "^2.22.0",
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.0"
+  }
+}

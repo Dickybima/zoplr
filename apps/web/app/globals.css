@@ -1,0 +1,40 @@
+:root {
+  --bg: #0b0d12;
+  --panel: #151922;
+  --border: #262c38;
+  --text: #e8ebf1;
+  --muted: #8b93a5;
+  --accent: #7c5cff;
+  --ok: #2ecc71;
+  --warn: #f5a623;
+  --err: #ff5c5c;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; }
+a { color: inherit; text-decoration: none; }
+.banner { background: var(--warn); color: #000; text-align: center; padding: 6px; font-size: 13px; font-weight: 600; }
+.header { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); max-width: 960px; margin: 0 auto; }
+.logo { font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+.main { max-width: 960px; margin: 0 auto; padding: 24px 16px; }
+.button { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 10px 16px; font-weight: 600; cursor: pointer; font-size: 14px; }
+.button:disabled { opacity: 0.5; cursor: not-allowed; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+.muted { color: var(--muted); font-size: 14px; }
+.status { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.status-live { color: var(--ok); }
+.status-launching, .status-draft { color: var(--warn); }
+.status-failed { color: var(--err); }
+form { display: flex; flex-direction: column; gap: 14px; max-width: 560px; }
+label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 600; }
+input, textarea { background: var(--panel); border: 1px solid var(--border); color: var(--text); border-radius: 8px; padding: 10px; font: inherit; font-weight: 400; }
+textarea { min-height: 120px; resize: vertical; }
+.error { color: var(--err); font-size: 14px; }
+.chat { display: flex; flex-direction: column; gap: 12px; }
+.messages { display: flex; flex-direction: column; gap: 10px; min-height: 240px; max-height: 60vh; overflow-y: auto; }
+.msg { padding: 10px 14px; border-radius: 12px; max-width: 80%; white-space: pre-wrap; line-height: 1.45; }
+.msg-user { align-self: flex-end; background: var(--accent); }
+.msg-assistant { align-self: flex-start; background: var(--panel); border: 1px solid var(--border); }
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; }
+code { background: var(--panel); padding: 2px 6px; border-radius: 4px; font-size: 13px; word-break: break-all; }

@@ -1,0 +1,30 @@
+{
+  "name": "@zoplr/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc -p . --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.4.0",
+    "@next/env": "^15.5.29",
+    "@tanstack/react-query": "^5.62.0",
+    "@zoplr/core": "workspace:*",
+    "@zoplr/db": "workspace:*",
+    "@zoplr/pons": "workspace:*",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "viem": "^2.22.0",
+    "wagmi": "^2.14.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}
